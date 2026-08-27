@@ -5,6 +5,7 @@ These rules apply across the repository unless a narrower rule file overrides th
 ## Architecture
 
 - Unless otherwise directed, write code against Laravel 12 conventions and APIs.
+- Follow Spatie guidelines when creating code.
 
 ## Security
 
@@ -30,7 +31,7 @@ These rules apply across the repository unless a narrower rule file overrides th
 
 - Treat every request as untrusted input.
 - Apply validation and authorization consistently on API endpoints.
-- Unless otherwise noted, use Laravel JSON resources for API responses.
+- Unless otherwise noted, use Spatie Laravel Data when wrapping API responses.
 
 ## Testing
 
