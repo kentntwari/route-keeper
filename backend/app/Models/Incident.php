@@ -42,4 +42,10 @@ class Incident extends Model
     {
         return $this->morphMany(Note::class, 'noteable');
     }
+
+    /** @return MorphMany<Snapshot, $this> */
+    public function snapshots(): MorphMany
+    {
+        return $this->morphMany(Snapshot::class, 'snapshotable');
+    }
 }
