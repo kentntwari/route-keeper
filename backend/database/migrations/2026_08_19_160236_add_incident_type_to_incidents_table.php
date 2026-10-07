@@ -8,17 +8,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('incidents', function (Blueprint $table) {
-            // Store the normalized value; application code enforces format
-            $table->string('incident_type', 100)->unique();
-        });
+        if (! Schema::hasColumn('incidents', 'incident_type')) {
+            Schema::table('incidents', function (Blueprint $table) {
+                // Store the normalized value; application code enforces format
+                $table->string('incident_type', 100)->unique();
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('incidents', function (Blueprint $table) {
-            $table->dropUnique(['incident_type']);
-            $table->dropColumn('incident_type');
-        });
+        if (Schema::hasColumn('incidents', 'incident_type')) {
+            Schema::table('incidents', function (Blueprint $table) {
+                $table->dropUnique(['incident_type']);
+                $table->dropColumn('incident_type');
+            });
+        }
     }
 };
