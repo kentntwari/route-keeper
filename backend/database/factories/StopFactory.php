@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Enums\StopException;
 use App\Models\Stop;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -34,7 +33,6 @@ class StopFactory extends Factory
             'estimated_time' => $this->assignEstimatedTime($totalMinutes),
             'deliveries_count' => fake()->numberBetween(0, 20),
             'pickups_count' => fake()->numberBetween(0, 20),
-            'exception' => null,
         ];
     }
 
@@ -43,33 +41,33 @@ class StopFactory extends Factory
         return sprintf('%02d:%02d', intdiv($minutes, 60), $minutes % 60);
     }
 
-    private function assignMoreOrLessPrefix(): TimePrefix
+    private static function assignMoreOrLessPrefix(): TimePrefix
     {
         return rand(0, 1) === 0 ? TimePrefix::MORE : TimePrefix::LESS;
     }
 
-    private function assignEstimatedTime(int $totalMinutes): string
+    public static function assignEstimatedTime(int $totalMinutes): string
     {
-        $prefix = $this->assignMoreOrLessPrefix();
+        $prefix = self::assignMoreOrLessPrefix();
 
         $hours = intdiv($totalMinutes, 60);
         $remainder = $totalMinutes % 60;
 
         if ($hours > 0 && $remainder > 0 && $prefix === TimePrefix::MORE) {
-            return sprintf('%s %d hours', $prefix->value, $hours);
+            return "+$hours";
         } elseif ($hours > 0 && $remainder > 0 && $prefix === TimePrefix::LESS) {
-            return sprintf('%s %d hours', $prefix->value, $hours + 1);
+            return '- '.($hours + 1);
         } elseif ($hours > 0 && $remainder === 0) {
             return $hours;
         } else {
-            return 'less than 1 hour';
+            return '-1';
         }
     }
 
-    public function withException(StopException $exception): static
+    public function invalidateEstimatedTime(): static
     {
         return $this->state(fn (): array => [
-            'exception' => $exception,
+            'estimated_time' => null,
         ]);
     }
 }
